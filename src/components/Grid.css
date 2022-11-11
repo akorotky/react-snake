@@ -1,0 +1,30 @@
+.grid {
+  background: radial-gradient(
+    rgb(119, 119, 119),
+    rgb(71, 71, 71)
+  ); 
+
+  box-shadow: inset 0 0 10vmin 2vmin #f0f,
+    inset 3vh 0 6vmin 3vmin rgb(0, 162, 255),
+    inset -3vh 0 6vmin 3vmin rgb(0, 162, 255), 0 0 5vmin rgb(0, 38, 255),
+    0 0 5vmin rgb(255, 251, 0), 0 0 5vmin rgb(221, 49, 255);
+}
+
+.grid-row {
+  display: flex; /* fixes the divs moving bug when changing zoom levels */
+  height: 5vmin;
+  margin: 0.2vmin;
+}
+
+.grid-column {
+  width: 5vmin;
+  height: 5vmin;
+
+  display: inline-grid; 
+
+  margin: 0.1vmin;
+
+  background: rgba(0, 0, 0, 0.9);
+}
+
+
