@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, useCallback } from "react";
-import useDirection from "../utils/useDirection";
 import Grid from "./Grid";
 import * as utils from "../utils";
 
@@ -22,75 +21,114 @@ const initialMatrixState = () =>
 const NUM_ROWS = 15,
   NUM_COLS = 18;
 
-
 function GameBoard() {
-  var speed = 150; // timeout value
+  var speed = 150; // delay value
   const snake = useRef(initialSnakeState());
-  const [direction, setDirection] = useDirection(initialDirectionState());
-  const prevDirection = useRef(initialDirectionState());
-
-  const fruit = useRef(utils.generateFruit(NUM_ROWS, NUM_COLS)); 
+  const food = useRef(utils.generateFood(NUM_ROWS, NUM_COLS));
   const score = useRef(0);
+  const currDirection = useRef(initialDirectionState());
+  const newDirection = useRef(initialDirectionState());
   const [matrix, setMatrix] = useState(initialMatrixState());
   const didRender = useRef(false);
 
-  const eatFruit = () => {
-    snake.current = utils.growSnake(snake.current);
-    fruit.current = utils.generateFruit(NUM_ROWS, NUM_COLS);
-    score.current = utils.updateScore(score.current);
-  };
+  const resetGameVariables = useCallback(() => {
+    const newSnake = initialSnakeState();
+    const newScore = 0;
+    currDirection.current = newDirection.current = initialDirectionState();
+    return [newSnake, newScore];
+  }, []);
 
-  const resetGame = useCallback(() => {
-    snake.current = initialSnakeState();
-    score.current = 0
-    setDirection(initialDirectionState());
-  }, [setDirection]);
+  const updateGameVariables = useCallback(
+    (matrix, direction, snake, food, score) => {
+      let newSnake = snake,
+        newFood = food,
+        newScore = score;
 
-  const snakeGameLoop = useCallback(
-    (direction, score, matrix, setMatrix) => {
-    
-       snake.current = utils.updateSnake(snake.current, direction);
+      newSnake = utils.updateSnake(snake, direction);
 
-      if (utils.didCollisionHappen(snake.current, matrix)) {
-        resetGame();
+      if (utils.didCollisionHappen(newSnake, matrix)) {
+        [newSnake, newScore] = resetGameVariables();
       } else {
-        const newSnakeHead = utils.getSnakeHead(snake.current);
+        const newSnakeHead = utils.getSnakeHead(newSnake);
 
-        if (
-          newSnakeHead.row === fruit.current.row &&
-          newSnakeHead.col === fruit.current.col
-        ) {
-          eatFruit();
+        if (newSnakeHead.row === food.row && newSnakeHead.col === food.col) {
+          [newSnake, newFood, newScore] = utils.consumeFood(
+            newSnake,
+            newScore,
+            matrix.length,
+            matrix[0].length
+          );
         }
       }
-      const matrixArgs = [
+      const newMatrix = utils.updateMatrix(
         initialMatrixState(),
-        setMatrix,
-        snake.current,
-        fruit.current,
-      ];
-      utils.updateMatrix(...matrixArgs);
+        newSnake,
+        newFood
+      );
+
+      return [newMatrix, newSnake, newFood, newScore];
     },
-    [resetGame]
+    [resetGameVariables]
   );
 
+  const setNewDirection = (newValue) => (newDirection.current = newValue);
+  const getCurrentDirection = () => currDirection.current;
+
+  const handleKeyDown = useCallback((e) => {
+    const positionShift = { row: 0, col: 0 };
+    const key = e.which;
+    if (key === 38 || key === 87) positionShift.row--; // up
+    if (key === 40 || key === 83) positionShift.row++; // down
+    if (key === 39 || key === 68) positionShift.col++; // right
+    if (key === 37 || key === 65) positionShift.col--; // left
+    const currentDirection = getCurrentDirection();
+    if (
+      currentDirection.row !== positionShift.row ||
+      currentDirection.col !== positionShift.col
+    ) {
+      setNewDirection(positionShift);
+    }
+  }, []);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleKeyDown]);
 
-      // prevent from firing renders continuously beyond the first render after gane reset
-      if (direction.row === direction.col && didRender.current) return;
-      
-      // verify that the new direction is not opposite to the previous one
-      if(utils.isValidDirectionChange(prevDirection.current, direction)) prevDirection.current = direction
-      const gameArgs = [prevDirection.current, score.current, matrix, setMatrix];
+  const game = () => {
+    // prevent from firing renders continuously beyond the first render after game reset
+    if (
+      newDirection.current.row === newDirection.current.col &&
+      didRender.current
+    )
+      return;
 
-      // game loop
-      snakeGameLoop(...gameArgs);
+    // verify that the new direction is not opposite to the previous one
+    if (
+      utils.isValidDirectionChange(currDirection.current, newDirection.current)
+    )
+      currDirection.current = newDirection.current;
 
-      if (!didRender.current) didRender.current = true;
+    const gameArgs = [
+      matrix,
+      currDirection.current,
+      snake.current,
+      food.current,
+      score.current,
+    ];
+    let newMatrix;
 
-    }, speed);
-    return () => clearTimeout(timer);
+    [newMatrix, snake.current, food.current, score.current] =
+      updateGameVariables(...gameArgs);
+    setMatrix(newMatrix);
+
+    if (!didRender.current) didRender.current = true;
+  };
+
+  // main program
+  useEffect(() => {
+    const timer = setInterval(game, speed);
+    return () => clearInterval(timer);
   });
 
   const toggleCellStyle = (cell) => {
@@ -104,12 +142,13 @@ function GameBoard() {
   };
 
   return (
-  <>
-    <div style={{color:"white", fontSize: "5vh"}}>Score: {score.current}</div>
-    <Grid matrix={matrix} cellStyle={toggleCellStyle}></Grid>;
-  </>
-  )
+    <>
+      <div style={{ color: "white", fontSize: "5vh", marginBottom: "2vh" }}>
+        Score: {score.current}
+      </div>
+      <Grid matrix={matrix} cellStyle={toggleCellStyle}></Grid>;
+    </>
+  );
 }
 
 export default GameBoard;
-

@@ -45,11 +45,18 @@ export const growSnake = (snake) => {
 };
 
 export const updateScore = (score) => {
-  if (score === null) return 1;
-  else return score + 1;
+  const newScore = score + 1;
+  return newScore;
 };
 
-export const generateFruit = (rowRange, colRange) => {
+export const consumeFood = (snake, score, rowRange, colRange) => {
+  const newSnake = growSnake(snake);
+  const newFood = generateFood(rowRange, colRange);
+  const newScore = updateScore(score);
+  return [newSnake, newFood, newScore];
+};
+
+export const generateFood = (rowRange, colRange) => {
   return {
     row: getRandomValue(rowRange),
     col: getRandomValue(colRange),
@@ -70,12 +77,7 @@ export const didCollisionHappen = (snake, matrix) => {
   return isSnakeOutOfBounds(snakeHead, matrix) || hasSnakeHitItself(snake);
 };
 
-export const updateMatrix = (
-  newMatrixValue,
-  matrixSetterFunction,
-  snake,
-  fruit
-) => {
+export const updateMatrix = (newMatrixValue, snake, food) => {
   const newMatrix = [...newMatrixValue];
 
   snake.forEach((cell, index) => {
@@ -83,9 +85,9 @@ export const updateMatrix = (
     newMatrix[cell.row][cell.col].isSnake = true;
   });
 
-  newMatrix[fruit.row][fruit.col].isFood = true;
+  newMatrix[food.row][food.col].isFood = true;
 
-  matrixSetterFunction(newMatrix);
+  return newMatrix;
 };
 
 export const updateSnake = (snake, positionShift) => {
