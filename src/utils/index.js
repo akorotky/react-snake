@@ -81,8 +81,10 @@ export const updateMatrix = (newMatrixValue, snake, food) => {
   const newMatrix = [...newMatrixValue];
 
   snake.forEach((cell, index) => {
-    if (index === 0) newMatrix[cell.row][cell.col].isHead = true;
-    newMatrix[cell.row][cell.col].isSnake = true;
+    if (!isSnakeOutOfBounds(cell, newMatrix)) {
+      if (index === 0) newMatrix[cell.row][cell.col].isHead = true;
+      newMatrix[cell.row][cell.col].isSnake = true;
+    }
   });
 
   newMatrix[food.row][food.col].isFood = true;

@@ -19,7 +19,12 @@ const initialMatrixState = () =>
   });
 
 const NUM_ROWS = 15,
-  NUM_COLS = 18;
+  NUM_COLS = 19;
+
+const MODE = {
+  withWalls: 0,
+  noWalls: 1,
+};
 
 function GameBoard() {
   var speed = 150; // delay value
@@ -30,6 +35,8 @@ function GameBoard() {
   const newDirection = useRef(initialDirectionState());
   const [matrix, setMatrix] = useState(initialMatrixState());
   const didRender = useRef(false);
+
+  const [gameMode, setGameMode] = useState(MODE.withWalls);
 
   const resetGameVariables = useCallback(() => {
     const newSnake = initialSnakeState();
@@ -47,7 +54,20 @@ function GameBoard() {
       newSnake = utils.updateSnake(snake, direction);
 
       if (utils.didCollisionHappen(newSnake, matrix)) {
-        [newSnake, newScore] = resetGameVariables();
+        const snakeHead = utils.getSnakeHead(newSnake);
+        // move snake head to the opposite side of the board if mode is noWalls
+        if (gameMode === 1 && utils.isSnakeOutOfBounds(snakeHead, matrix)) {
+          let positionShift;
+          if (snakeHead.row < 0) positionShift = { row: matrix.length, col: 0 };
+          else if (snakeHead.row >= matrix.length)
+            positionShift = { row: matrix.length * -1, col: 0 };
+          else if (snakeHead.col < 0)
+            positionShift = { row: 0, col: matrix[0].length };
+          else if (snakeHead.col >= matrix[0].length)
+            positionShift = { row: 0, col: matrix[0].length * -1 };
+
+          newSnake = utils.updateSnake(newSnake, positionShift);
+        } else [newSnake, newScore] = resetGameVariables();
       } else {
         const newSnakeHead = utils.getSnakeHead(newSnake);
 
@@ -68,7 +88,7 @@ function GameBoard() {
 
       return [newMatrix, newSnake, newFood, newScore];
     },
-    [resetGameVariables]
+    [resetGameVariables, gameMode]
   );
 
   const setNewDirection = (newValue) => (newDirection.current = newValue);
@@ -78,9 +98,10 @@ function GameBoard() {
     const positionShift = { row: 0, col: 0 };
     const key = e.which;
     if (key === 38 || key === 87) positionShift.row--; // up
-    if (key === 40 || key === 83) positionShift.row++; // down
-    if (key === 39 || key === 68) positionShift.col++; // right
-    if (key === 37 || key === 65) positionShift.col--; // left
+    else if (key === 40 || key === 83) positionShift.row++; // down
+    else if (key === 39 || key === 68) positionShift.col++; // right
+    else if (key === 37 || key === 65) positionShift.col--; // left
+    else return; // if key is different then do nothing
     const currentDirection = getCurrentDirection();
     if (
       currentDirection.row !== positionShift.row ||
@@ -142,12 +163,21 @@ function GameBoard() {
   };
 
   return (
-    <>
-      <div style={{ color: "white", fontSize: "5vh", marginBottom: "2vh" }}>
-        Score: {score.current}
+    <div style={{ display: "inline-flex" }}>
+      <div id="grid-container">
+        <div id="score">Score: {score.current}</div>
+        <Grid matrix={matrix} cellStyle={toggleCellStyle}></Grid>
       </div>
-      <Grid matrix={matrix} cellStyle={toggleCellStyle}></Grid>;
-    </>
+      <div className="dropdown">
+        <button className="dropbtn">Toggle Game Mode</button>
+        <div className="dropdown-content">
+          <button onClick={() => setGameMode(MODE.withWalls)}>
+            With Walls
+          </button>
+          <button onClick={() => setGameMode(MODE.noWalls)}>No Walls</button>
+        </div>
+      </div>
+    </div>
   );
 }
 
