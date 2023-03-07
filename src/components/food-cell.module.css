@@ -1,0 +1,14 @@
+.food {
+  background: linear-gradient(to left, rgb(236, 137, 8), rgb(253, 232, 37));
+  height: 100%;
+  border-radius: 2em;
+}
+
+.food::before {
+  content: "";
+  background: rgb(4, 204, 54);
+  height: 1em;
+  width: 1em;
+  z-index: 1;
+  border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
+}

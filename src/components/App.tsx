@@ -1,14 +1,13 @@
-import styles from "./app.module.css"
-import Grid from './Grid'
-import Toolbar from './Toolbar'
+import { NUM_COLS, NUM_ROWS } from "../constants";
+import styles from "./app.module.css";
+import Grid from "./Grid";
 
 function App() {
   return (
     <div className={styles.app}>
-      <Toolbar></Toolbar>
-      <Grid numRows={15} numCols={15}></Grid>
+      <Grid numRows={NUM_ROWS} numCols={NUM_COLS}></Grid>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

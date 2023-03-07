@@ -1,11 +1,14 @@
 .container {
-  background-color: red;
-  border: 5px solid black;
+  /* background-color: rgb(129, 126, 126); */
   display: flex;
   justify-content: center;
 }
 .gridbox {
-    
+  border: 0.5em solid rgb(105, 104, 104);
+  border-radius: 0.5em;
+}
+.gridbox:focus {
+  outline: none;
 }
 .row {
   display: flex;
@@ -15,5 +18,12 @@
 .cell {
   width: 3.5em;
   height: 100%;
-  background-color: green;
+  background-color: rgb(118, 187, 8);
+}
+
+.row:nth-child(even) .cell:nth-child(odd) {
+  background-color: rgb(130, 209, 3);
+}
+.row:nth-child(odd) .cell:nth-child(even) {
+  background-color: rgb(130, 209, 3);
 }
