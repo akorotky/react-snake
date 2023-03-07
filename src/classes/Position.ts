@@ -10,6 +10,7 @@ class Position {
     this.shiftCol = this.shiftCol.bind(this);
     this.getRow = this.getRow.bind(this);
     this.getCol = this.getCol.bind(this);
+    this.equals = this.equals.bind(this);
   }
 
   shiftRow(shift: number) {
@@ -19,12 +20,22 @@ class Position {
   shiftCol(shift: number) {
     this.#col += shift;
   }
-  
+
   getRow() {
     return this.#row;
   }
   getCol() {
     return this.#col;
+  }
+
+  equals(position: Position) {
+    return (
+      this.getRow() === position.getRow() && this.getCol() == position.getCol()
+    );
+  }
+
+  toString() {
+    return `Position {row: ${this.getRow()} col: ${this.getCol()}}`;
   }
 }
 

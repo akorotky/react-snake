@@ -11,7 +11,7 @@ class Snake {
     this.#head = snake[0];
     this.#tail = snake[snake.length - 1];
     this.#bodyMap = new Map(
-      snake.map((pos) => [positionID(pos.getRow(), pos.getCol()), pos])
+      snake.map((pos) => [positionID(pos), pos])
     );
     this.#bodyArray = snake;
 
@@ -24,7 +24,7 @@ class Snake {
     this.move = this.move.bind(this);
     this.has = this.has.bind(this);
   }
-  
+
   setHead(newHead: Position) {
     this.#head = newHead;
   }
@@ -33,8 +33,8 @@ class Snake {
     this.#tail = newTail;
   }
 
-  has(el: Position) {
-    return this.#bodyMap.has(positionID(el.getRow(), el.getCol()));
+  has(pos: Position) {
+    return this.#bodyMap.has(positionID(pos));
   }
 
   getHead() {
@@ -46,7 +46,7 @@ class Snake {
 
   removeTail(tail: Position) {
     this.#bodyArray.pop();
-    this.#bodyMap.delete(positionID(tail.getRow(), tail.getCol()));
+    this.#bodyMap.delete(positionID(tail));
     this.setTail(this.#bodyArray[this.#bodyArray.length - 1]);
   }
 
@@ -62,7 +62,7 @@ class Snake {
     );
     this.setHead(newHead);
     this.removeTail(this.getTail());
-    this.#bodyMap.set(positionID(newHead.getRow(), newHead.getCol()), newHead);
+    this.#bodyMap.set(positionID(newHead), newHead);
     this.#bodyArray.unshift(newHead);
   }
 }

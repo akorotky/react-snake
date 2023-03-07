@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Position from "../classes/Position";
 import Snake from "../classes/Snake";
 import useKeyDown from "./useKeyDown";
 
@@ -8,7 +9,7 @@ function useSnake(initialSnakeState: Snake) {
 
   useEffect(() => {
     const frameID = setInterval(() => {
-      if (positionShift.getRow() === 0 && positionShift.getCol() === 0) return;
+      if (positionShift.equals(new Position(0, 0))) return;
       const newSnake = new Snake(snake.getBody());
       newSnake.move(positionShift);
       setSnake(new Snake(newSnake.getBody()));

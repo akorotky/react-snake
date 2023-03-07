@@ -14,8 +14,8 @@ function createMatrix(numRows: number, numCols: number): number[][] {
   return m;
 }
 
-function positionID(row: number, col: number): string {
-  return `${row} ${col}`;
+function positionID(position: Position): string {
+  return `${position.getRow()} ${position.getCol()}`;
 }
 
 function isSnakeCell(row: number, col: number, snake: Snake): boolean {
@@ -77,6 +77,20 @@ export const didCollisionHappen = (snake: Snake, matrix: TMatrix) => {
   return isOutOfBounds(snake, matrix) || didSnakeCollide(snake);
 };
 
+function isValidDirectionChange(
+  prevDirection: Position,
+  newDirection: Position
+) {
+  /*
+    directions must not be opposite
+    */
+  return prevDirection.getRow() !== 0
+    ? -1 * prevDirection.getRow() !== newDirection.getRow()
+    : true && prevDirection.getCol() !== 0
+    ? -1 * prevDirection.getCol() !== newDirection.getCol()
+    : true;
+}
+
 export {
   createMatrix,
   positionID,
@@ -84,4 +98,5 @@ export {
   isFoodCell,
   didSnakeCollide,
   generateFood,
+  isValidDirectionChange,
 };
