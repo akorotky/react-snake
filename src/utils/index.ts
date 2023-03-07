@@ -22,10 +22,9 @@ function isSnakeCell(row: number, col: number, snake: Snake): boolean {
   return snake.has(new Position(row, col));
 }
 
-function isFoodCell(rowIdx:number, colIdx:number, food:Position){
-    return rowIdx === food.row && colIdx === food.col
+function isFoodCell(rowIdx: number, colIdx: number, food: Position) {
+  return rowIdx === food.getRow() && colIdx === food.getCol();
 }
-
 
 function getRandInt(interval: number) {
   return Math.floor(Math.random() * interval);
@@ -34,10 +33,10 @@ function getRandInt(interval: number) {
 function isOutOfBounds(snake: Snake, matrix: TMatrix) {
   const snakeHead = snake.getHead();
   return (
-    snakeHead.row < 0 ||
-    snakeHead.col < 0 ||
-    snakeHead.row >= getNumRows(matrix) ||
-    snakeHead.col >= getNumCols(matrix)
+    snakeHead.getRow() < 0 ||
+    snakeHead.getCol() < 0 ||
+    snakeHead.getRow() >= getNumRows(matrix) ||
+    snakeHead.getCol() >= getNumCols(matrix)
   );
 }
 
@@ -66,8 +65,8 @@ function didSnakeCollide(snake: Snake) {
   const snakeBody = snake.getBody();
   for (let i = 1; i < snakeBody.length; i++) {
     if (
-      snakeHead.row === snakeBody[i].row &&
-      snakeHead.col === snakeBody[i].col
+      snakeHead.getRow() === snakeBody[i].getRow() &&
+      snakeHead.getCol() === snakeBody[i].getCol()
     )
       return true;
   }
@@ -78,4 +77,11 @@ export const didCollisionHappen = (snake: Snake, matrix: TMatrix) => {
   return isOutOfBounds(snake, matrix) || didSnakeCollide(snake);
 };
 
-export { createMatrix, positionID, isSnakeCell, isFoodCell, didSnakeCollide, generateFood };
+export {
+  createMatrix,
+  positionID,
+  isSnakeCell,
+  isFoodCell,
+  didSnakeCollide,
+  generateFood,
+};

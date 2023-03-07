@@ -8,7 +8,7 @@ function useSnake(initialSnakeState: Snake) {
 
   useEffect(() => {
     const frameID = setInterval(() => {
-      if (positionShift.row === 0 && positionShift.col === 0) return;
+      if (positionShift.getRow() === 0 && positionShift.getCol() === 0) return;
       const newSnake = new Snake(snake.getBody());
       newSnake.move(positionShift);
       setSnake(new Snake(newSnake.getBody()));

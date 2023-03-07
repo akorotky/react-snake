@@ -13,11 +13,13 @@ function useKeyDown() {
 
   function handlePositionShift(key: string) {
     const newPositionShift = new Position(0, 0);
-    console.log(key);
-    if (key === "KeyW" || key == "ArrowUp") newPositionShift.row--;
-    else if (key === "KeyS" || key == "ArrowDown") newPositionShift.row++;
-    else if (key === "KeyA" || key == "ArrowLeft") newPositionShift.col--;
-    else if (key === "KeyD" || key == "ArrowRight") newPositionShift.col++;
+
+    if (key === "KeyW" || key == "ArrowUp") newPositionShift.shiftRow(-1);
+    else if (key === "KeyS" || key == "ArrowDown") newPositionShift.shiftRow(1);
+    else if (key === "KeyA" || key == "ArrowLeft")
+      newPositionShift.shiftCol(-1);
+    else if (key === "KeyD" || key == "ArrowRight")
+      newPositionShift.shiftCol(1);
     return newPositionShift;
   }
 

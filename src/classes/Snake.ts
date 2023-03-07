@@ -11,7 +11,7 @@ class Snake {
     this.#head = snake[0];
     this.#tail = snake[snake.length - 1];
     this.#bodyMap = new Map(
-      snake.map((pos) => [positionID(pos.row, pos.col), pos])
+      snake.map((pos) => [positionID(pos.getRow(), pos.getCol()), pos])
     );
     this.#bodyArray = snake;
 
@@ -23,16 +23,18 @@ class Snake {
     this.getBody = this.getBody.bind(this);
     this.move = this.move.bind(this);
     this.has = this.has.bind(this);
-   
   }
+  
   setHead(newHead: Position) {
     this.#head = newHead;
   }
+
   setTail(newTail: Position) {
     this.#tail = newTail;
   }
+
   has(el: Position) {
-    return this.#bodyMap.has(positionID(el.row, el.col));
+    return this.#bodyMap.has(positionID(el.getRow(), el.getCol()));
   }
 
   getHead() {
@@ -44,7 +46,7 @@ class Snake {
 
   removeTail(tail: Position) {
     this.#bodyArray.pop();
-    this.#bodyMap.delete(positionID(tail.row, tail.col));
+    this.#bodyMap.delete(positionID(tail.getRow(), tail.getCol()));
     this.setTail(this.#bodyArray[this.#bodyArray.length - 1]);
   }
 
@@ -55,12 +57,12 @@ class Snake {
   move(positionShift: Position) {
     const currentHead = this.getHead();
     const newHead = new Position(
-      currentHead.row + positionShift.row,
-      currentHead.col + positionShift.col
+      currentHead.getRow() + positionShift.getRow(),
+      currentHead.getCol() + positionShift.getCol()
     );
     this.setHead(newHead);
     this.removeTail(this.getTail());
-    this.#bodyMap.set(positionID(newHead.row, newHead.col), newHead);
+    this.#bodyMap.set(positionID(newHead.getRow(), newHead.getCol()), newHead);
     this.#bodyArray.unshift(newHead);
   }
 }
