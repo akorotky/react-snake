@@ -1,8 +1,16 @@
-import Position from "../classes/Position";
-import Snake from "../classes/Snake";
-import { TMatrix } from "../types";
+import { TMatrix, TPosition, TSnakeBodyMap } from "../types";
 
-function createMatrix(numRows: number, numCols: number): number[][] {
+function position(row: number, col: number): TPosition {
+  return {
+    row: row,
+    col: col,
+  };
+}
+
+function isSamePosition(posA: TPosition, posB: TPosition) {
+  return posA.row === posB.row && posA.col == posB.col;
+}
+function createGrid(numRows: number, numCols: number): number[][] {
   const m = [];
   for (let i = 0; i < numRows; i++) {
     const row = [];
@@ -14,38 +22,41 @@ function createMatrix(numRows: number, numCols: number): number[][] {
   return m;
 }
 
-function positionID(position: Position): string {
-  return `${position.getRow()} ${position.getCol()}`;
+function positionID(position: TPosition): string {
+  return `${position.row} ${position.col}`;
 }
 
-function isSnakeCell(row: number, col: number, snake: Snake): boolean {
-  return snake.has(new Position(row, col));
+function isSnakeCell(
+  row: number,
+  col: number,
+  snakeBody: TSnakeBodyMap
+): boolean {
+  return positionID(position(row, col)) in snakeBody;
 }
 
-function isFoodCell(rowIdx: number, colIdx: number, food: Position) {
-  return rowIdx === food.getRow() && colIdx === food.getCol();
+function isFoodCell(rowIdx: number, colIdx: number, food: TPosition) {
+  return rowIdx === food.row && colIdx === food.col;
 }
 
 function getRandInt(interval: number) {
   return Math.floor(Math.random() * interval);
 }
 
-function isOutOfBounds(snake: Snake, matrix: TMatrix) {
-  const snakeHead = snake.getHead();
+function isOutOfBounds(snakeHead: TPosition, matrix: TMatrix) {
   return (
-    snakeHead.getRow() < 0 ||
-    snakeHead.getCol() < 0 ||
-    snakeHead.getRow() >= getNumRows(matrix) ||
-    snakeHead.getCol() >= getNumCols(matrix)
+    snakeHead.row < 0 ||
+    snakeHead.col < 0 ||
+    snakeHead.row >= getNumRows(matrix) ||
+    snakeHead.col >= getNumCols(matrix)
   );
 }
 
-function generateFood(snake: Snake, matrix: TMatrix) {
+function generateFood(snakeBody: TSnakeBodyMap, matrix: TMatrix) {
   const emptyCells = [];
   for (let i = 0; i < matrix.length; i++) {
     for (let j = 0; j < matrix[i].length; j++) {
-      const pos = new Position(i, j);
-      if (snake.has(pos) == false) emptyCells.push(pos);
+      const pos = position(i, j);
+      if (snakeBody[positionID(pos)] !== null) emptyCells.push(pos);
     }
   }
   const randomIdx = getRandInt(emptyCells.length);
@@ -60,43 +71,50 @@ function getNumCols(matrix: TMatrix) {
   return matrix[0].length;
 }
 
-function didSnakeCollide(snake: Snake) {
-  const snakeHead = snake.getHead();
-  const snakeBody = snake.getBody();
+function didSnakeCollide(snakeHead: TPosition, snakeBody: TPosition[]) {
   for (let i = 1; i < snakeBody.length; i++) {
     if (
-      snakeHead.getRow() === snakeBody[i].getRow() &&
-      snakeHead.getCol() === snakeBody[i].getCol()
+      snakeHead.row === snakeBody[i].row &&
+      snakeHead.col === snakeBody[i].col
     )
       return true;
   }
   return false;
 }
 
-export const didCollisionHappen = (snake: Snake, matrix: TMatrix) => {
-  return isOutOfBounds(snake, matrix) || didSnakeCollide(snake);
+export const didCollisionHappen = (
+  snakeHead: TPosition,
+  snakeBody: TPosition[],
+  matrix: TMatrix
+) => {
+  return (
+    isOutOfBounds(snakeHead, matrix) || didSnakeCollide(snakeHead, snakeBody)
+  );
 };
 
 function isValidDirectionChange(
-  prevDirection: Position,
-  newDirection: Position
+  prevDirection: TPosition,
+  newDirection: TPosition
 ) {
   /*
     directions must not be opposite
     */
-  return prevDirection.getRow() !== 0
-    ? -1 * prevDirection.getRow() !== newDirection.getRow()
-    : true && prevDirection.getCol() !== 0
-    ? -1 * prevDirection.getCol() !== newDirection.getCol()
+  return prevDirection.row !== 0
+    ? -1 * prevDirection.row !== newDirection.row
+    : true && prevDirection.col !== 0
+    ? -1 * prevDirection.col !== newDirection.col
     : true;
 }
 
 export {
-  createMatrix,
+  createGrid,
   positionID,
   isSnakeCell,
   isFoodCell,
   didSnakeCollide,
   generateFood,
   isValidDirectionChange,
+  position,
+  isSamePosition,
+  isOutOfBounds,
 };

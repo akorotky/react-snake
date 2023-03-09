@@ -1,0 +1,52 @@
+.app {
+  height: 100%;
+  width: 100%;
+  background: #8888;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.score {
+  position: absolute;
+  margin: 0 75% 0 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 3em;
+  color: #ffc400;
+  border: 0.05em solid rgba(255, 255, 255, 0.808);
+  border-radius: 1.3em;
+  padding: 0.3em 0.6em 0.55em 0.6em;
+  background-color: #2222;
+}
+.score .number {
+  color: rgba(255, 255, 255, 0.808);
+}
+
+.changemode {
+  position: absolute;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  right: 5%;
+}
+
+.changemode button {
+  padding: 1em;
+  font-size: 1.5em;
+  border: 0.1em solid white;
+  color: white;
+  background-color: #4444;
+  border-radius: 0.8em;
+  margin: 0.5em;
+}
+
+.changemode button:hover {
+  background-color: #13131354;
+}
+
+.changemode div {
+  font-size: 1.2em;
+  color: white;
+}

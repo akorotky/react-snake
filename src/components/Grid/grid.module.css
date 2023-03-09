@@ -1,10 +1,9 @@
 .container {
-  /* background-color: rgb(129, 126, 126); */
   display: flex;
   justify-content: center;
 }
 .gridbox {
-  border: 0.5em solid rgb(105, 104, 104);
+  border: 0.5em solid #3333;
   border-radius: 0.5em;
 }
 .gridbox:focus {
@@ -19,6 +18,9 @@
   width: 3.5em;
   height: 100%;
   background-color: rgb(118, 187, 8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .row:nth-child(even) .cell:nth-child(odd) {

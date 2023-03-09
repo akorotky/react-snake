@@ -1,0 +1,54 @@
+.food {
+  background: linear-gradient(to left, rgb(236, 137, 8), rgb(253, 232, 37));
+  height: 100%;
+  width: 100%;
+  border-radius: 1.5em 1.5em 1.5em 1.5em;
+}
+
+.food::before {
+  content: "";
+  background: rgb(7, 199, 65);
+  position: relative;
+  top: -20%;
+  left: 40%;
+  height: 1em;
+  width: 1em;
+  display: block;
+  border-radius: 100% 0% 100% 0% / 100% 0% 100% 0%;
+}
+
+.food::after {
+  content: "Eat me";
+  position: relative;
+  top: 5%;
+  left: 10%;
+  height: 1em;
+  width: 1em;
+
+  font-style: italic;
+
+  animation: color-change 3s infinite;
+  animation-direction: alternate;
+  animation-delay: 0ms;
+}
+
+@keyframes color-change {
+  0% {
+    color: rgb(0, 102, 255);
+  }
+  20% {
+    color: blue;
+  }
+  40% {
+    color: green;
+  }
+  40% {
+    color: rgb(247, 0, 255);
+  }
+  60% {
+    color: red;
+  }
+  100% {
+    color: rgb(170, 25, 199);
+  }
+}

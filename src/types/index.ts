@@ -1,18 +1,36 @@
-import Position from "../classes/Position";
-import Snake from "../classes/Snake";
+import { SnakeState } from "../redux/game-slice";
+
+type TPosition = {
+  row: number;
+  col: number;
+};
 
 type TMatrix = number[][];
-
-type TGridProps = {
-  numRows: number;
-  numCols: number;
-};
 
 type TCellContentProps = {
   row: number;
   col: number;
-  snake: Snake;
-  food: Position;
+  snake: SnakeState;
+  food: TPosition;
 };
 
-export type { TMatrix, TGridProps, TCellContentProps };
+type TSnakeBodyMap = { [key: string]: TPosition };
+
+type TGridProps = {
+  grid: number[][];
+};
+
+type TSnakeCellProps = {
+  snake: SnakeState;
+  row: number;
+  col: number;
+};
+
+export type {
+  TMatrix,
+  TGridProps,
+  TCellContentProps,
+  TPosition,
+  TSnakeBodyMap,
+  TSnakeCellProps,
+};
