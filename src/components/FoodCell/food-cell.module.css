@@ -1,8 +1,9 @@
 .food {
   background: linear-gradient(to left, rgb(236, 137, 8), rgb(253, 232, 37));
-  height: 100%;
-  width: 100%;
-  border-radius: 1.5em 1.5em 1.5em 1.5em;
+  height: 90%;
+  width: 90%;
+  border-radius: 1.5em;
+  animation: fruit-pulse 3s infinite;
 }
 
 .food::before {
@@ -20,12 +21,13 @@
 .food::after {
   content: "Eat me";
   position: relative;
-  top: 5%;
-  left: 10%;
+  bottom: 2%;
+  left: 9%;
   height: 1em;
   width: 1em;
 
   font-style: italic;
+  font-size: 0.9em;
 
   animation: color-change 3s infinite;
   animation-direction: alternate;
@@ -50,5 +52,17 @@
   }
   100% {
     color: rgb(170, 25, 199);
+  }
+}
+
+@keyframes fruit-pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
   }
 }

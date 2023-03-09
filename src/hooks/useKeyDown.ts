@@ -31,7 +31,7 @@ function useKeyDown() {
   function handleKeyDown(e: KeyboardEvent) {
     const newPositionShift = handlePositionShift(positionShift, e.code);
     // update state only when its different
-    if (isSamePosition(positionShift, newPositionShift) === false)
+    if (!isSamePosition(positionShift, newPositionShift))
       setPositionShift(newPositionShift);
   }
 
