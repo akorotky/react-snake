@@ -40,6 +40,7 @@
   background-color: #4444;
   border-radius: 0.8em;
   margin: 0.5em;
+  outline: none;
 }
 
 .changemode button:hover {
