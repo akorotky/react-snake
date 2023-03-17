@@ -10,11 +10,11 @@ function useHighScore(score: number) {
   }, [score]);
 
   function getHighScore(): number {
-    return parseInt(localStorage.getItem("highScore") || "0");
+    return JSON.parse(localStorage.getItem("highScore") || "0");
   }
 
   function setNewHighScore(newHighScore: number) {
-    localStorage.setItem("highScore", newHighScore.toString());
+    localStorage.setItem("highScore", JSON.stringify(newHighScore));
     setHighScore(newHighScore);
   }
 
